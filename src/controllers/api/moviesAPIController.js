@@ -13,8 +13,27 @@ const Actors = db.Actor;
 
 const moviesAPIController = {
     'list': (req, res) => {
+        const query = req.query;
+        const genreId = Number(query.genre) ? Number(query.genre) : null;
+        const actorNameKeyword = query.actor_name ? query.actor_name: '';
         db.Movie.findAll({
-            include: ['genre']
+            include: [
+                {
+                    model: Genres,
+                    as: 'genre',
+                    where: { id: { [ genreId ? Op.eq : Op.ne ]: genreId } }
+                },
+                {
+                    model: Actors,
+                    as: 'actors',
+                    where: {
+                        [Op.or]: [
+                            {first_name: { [Op.substring]: actorNameKeyword }},
+                            {last_name: { [Op.substring]: actorNameKeyword }}
+                        ]
+                    }
+                }
+            ]
         })
         .then(movies => {
             let respuesta = {

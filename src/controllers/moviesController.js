@@ -93,24 +93,32 @@ const moviesController = {
             return res.render(path.resolve(__dirname, '..', 'views',  'moviesEdit'), {Movie,allGenres,allActors})})
         .catch(error => res.send(error))
     },
-    update: function (req,res) {
+    update: async function (req,res) {
         let movieId = req.params.id;
-        Movies
-        .update(
-            {
-                title: req.body.title,
-                rating: req.body.rating,
-                awards: req.body.awards,
-                release_date: req.body.release_date,
-                length: req.body.length,
-                genre_id: req.body.genre_id
-            },
-            {
-                where: {id: movieId}
-            })
-        .then(()=> {
-            return res.redirect('/movies')})            
-        .catch(error => res.send(error))
+        try {
+            const response = await Movies.update(
+                {
+                    title: req.body.title,
+                    rating: req.body.rating,
+                    awards: req.body.awards,
+                    release_date: req.body.release_date,
+                    length: req.body.length,
+                    genre_id: req.body.genre_id
+                },
+                {
+                    where: {id: movieId}
+                }
+            );
+            // const movie = await Movies.findByPk(movieId);
+            // const movieActors = await movie.getActors();
+            // await movie.setActors([1]);
+            // await movie.addActors([2]);
+            // const movieActorsSetted = await movie.getActors();
+            // console.log(movieActorsSetted);
+            return res.redirect('/movies')            
+        } catch (err) {
+            res.send(err)
+        }
     },
     delete: function (req,res) {
         let movieId = req.params.id;

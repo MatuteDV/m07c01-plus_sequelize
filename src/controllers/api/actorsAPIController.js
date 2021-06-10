@@ -14,7 +14,29 @@ const Actors = db.Actor;
 //----------------------------------
 const actorsAPIController = {
     'list': (req, res) => {
-        db.Actor.findAll()
+        const query = req.query;
+        const minRating = query.movies_ratings ? query.movies_ratings : 0;
+        const genreId = Number(query.genre) ? Number(query.genre) : null;
+        db.Actor.findAll({
+            include: [
+                {
+                    model: Movies,
+                    as: 'movies',
+                    where: {
+                        rating: { [Op.gte]: minRating }
+                    },
+                    include: [
+                        {
+                            model: Genres,
+                            as: 'genre',
+                            where: {
+                                id: { [ genreId ? Op.eq : Op.ne ]: genreId }
+                            }
+                        }
+                    ]
+                }
+            ],
+        })
         .then(actors => {
             let respuesta = {
                 meta: {
