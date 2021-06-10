@@ -11,7 +11,7 @@
 <body>
     <figure>
         <img src="/img/logo-DH.png" alt="Logo Digital House">
-      </figure>
+    </figure>
     <h1 class="titulo">Película Editada:  <%= Movie.title %></h1>
     <section class="formulario">
         <form action="/movies/update/<%= Movie.id %>?_method=PUT" method="POST">
@@ -33,6 +33,16 @@
                     <% }); %>
                 </select>
             </p>
+            <!-- <%# if ( allActors ) { %>
+                <label for="actor">Actor</label>
+                <p>
+                    <select name="actor" id="actor">
+                        <%# allActors.forEach(actor => { %>
+                           <option value="<%#= actor.id %>"><%#=`${actor.first_name} ${actor.last_name}`%></option> 
+                        <%# }); %>
+                    </select>
+                </p>
+            <%# } %> -->
 
     <!--
             <label for="genre_id">Genre ID </label>
